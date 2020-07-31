@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -15,6 +17,13 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
+
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 
 public class AddFaceActivity extends AppCompatActivity {
 
@@ -60,9 +69,9 @@ public class AddFaceActivity extends AppCompatActivity {
         mAddFaceBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                addFace();
             }
         });
-
     }
 
     private void openGallery() {
@@ -90,5 +99,42 @@ public class AddFaceActivity extends AppCompatActivity {
         ContentResolver contentResolver = getContentResolver();
         MimeTypeMap mime = MimeTypeMap.getSingleton();
         return mime.getExtensionFromMimeType(contentResolver.getType(uri));
+    }
+
+    private void addFace() {
+
+        // get the person name entered by the user
+        String personName = mPersonName.getText().toString().trim();
+
+        // set the image name
+        String trainImageName =
+                personName.replaceAll(" ", "-").toLowerCase()
+                + "-" + System.currentTimeMillis()
+                + "." + getFileExtension(mImageUri);
+
+        // the local server url
+        // TODO -- Change it in the future to real server
+        String postUrl= "http://192.168.1.2:5000/train";
+
+        // convert the image to byte array format
+        // TODO -- Refactor this to a separate function
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        try {
+            Bitmap bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(mImageUri));
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        byte[] byteArray = stream.toByteArray();
+
+        // collect the data above in the request body to sent it to server
+        RequestBody postBodyImage = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("person_name", personName)
+                .addFormDataPart("train_image", trainImageName, RequestBody.create(MediaType.parse("image/*jpg"), byteArray))
+                .build();
+
+        // after getting the data, remove the person name text field
+        mPersonName.setText("");
     }
 }
