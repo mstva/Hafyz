@@ -122,7 +122,7 @@ public class AddFaceActivity extends AppCompatActivity {
 
         // the local server url
         // TODO -- Change it in the future to real server
-        String postUrl= "http://192.168.1.2:5000/train";
+        String postUrl= "http://172.25.157.143:5000/train";
 
         // convert the image to byte array format
         // TODO -- Refactor this to a separate function
