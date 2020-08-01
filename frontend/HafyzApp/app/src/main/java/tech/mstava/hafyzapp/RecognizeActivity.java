@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -15,6 +17,12 @@ import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import tech.mstava.hafyzapp.utils.GraphicOverlay;
 
 public class RecognizeActivity extends AppCompatActivity {
@@ -60,6 +68,7 @@ public class RecognizeActivity extends AppCompatActivity {
         mRecognizeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                recognizeFace();
             }
         });
     }
@@ -89,5 +98,35 @@ public class RecognizeActivity extends AppCompatActivity {
         ContentResolver contentResolver = getContentResolver();
         MimeTypeMap mime = MimeTypeMap.getSingleton();
         return mime.getExtensionFromMimeType(contentResolver.getType(uri));
+    }
+
+    private void recognizeFace() {
+        // set a name for test image
+        String testImageName = "unknown"
+                + "-" + System.currentTimeMillis()
+                + "." + getFileExtension(mImageUri);
+
+        // set the local ip -- ubuntu local host ip address
+        // TODO -- Change it in the future to real server
+        String postUrl= "http://172.25.157.143:5000/test";
+
+        // convert image to byte array
+        // TODO -- Refactor this to a separate function
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+
+        try {
+            Bitmap bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(mImageUri));
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        byte[] byteArray = stream.toByteArray();
+
+        // collect data into request body
+        RequestBody postBodyImage = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("test_image", testImageName, RequestBody.create(MediaType.parse("image/*jpg"), byteArray))
+                .build();
     }
 }
