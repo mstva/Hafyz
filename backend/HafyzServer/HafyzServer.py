@@ -1,6 +1,8 @@
+import os
 import flask
 import werkzeug
-import os
+import face_recognition
+import json
 
 def startServer():
 
@@ -31,6 +33,30 @@ def startServer():
         names.write("\n")
 
         return "Train Image Uploaded Successfully"
+
+    @app.route('/test', methods=['GET', 'POST'])
+    def getTestData():
+
+        # get the test image drom android
+        imageFile = flask.request.files['test_image']
+        filename = werkzeug.utils.secure_filename(imageFile.filename)
+
+        # save the test image in test folder
+        imageFile.save("images/test/" + filename)
+
+        # create path for test image uploaded
+        test_image_path = 'images/test/' + filename
+
+        # pass this path to process test image and rocognize face
+        data_dict = processData(test_image_path)
+
+        # convert the dict returend by processing data to  json
+        json_data = json.dumps(data_dict)
+
+        # remove the test image from the folder
+        os.remove('images/test/' + filename)
+
+        return json_data
 
     app.run(host="0.0.0.0", port=5000, debug=True)
 
