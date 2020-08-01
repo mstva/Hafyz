@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "260546485436",
+    "firebase_url": "https://hafyzapp.firebaseio.com",
+    "project_id": "hafyzapp",
+    "storage_bucket": "hafyzapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:260546485436:android:d71b0945b8a2e998c644b9",
+        "android_client_info": {
+          "package_name": "tech.mstava.hafyzapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "260546485436-5gv7nivvbnond3bhqf2h0ktgp3o1ofc3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDplhqmoCYzluSpMxKoX5OezEf8lY5oZWo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "260546485436-5gv7nivvbnond3bhqf2h0ktgp3o1ofc3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
