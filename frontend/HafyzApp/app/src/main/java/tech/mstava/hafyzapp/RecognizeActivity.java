@@ -1,5 +1,6 @@
 package tech.mstava.hafyzapp;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -14,15 +15,22 @@ import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
+import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import okhttp3.RequestBody;
+import okhttp3.Response;
 import tech.mstava.hafyzapp.utils.GraphicOverlay;
 
 public class RecognizeActivity extends AppCompatActivity {
@@ -128,5 +136,37 @@ public class RecognizeActivity extends AppCompatActivity {
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("test_image", testImageName, RequestBody.create(MediaType.parse("image/*jpg"), byteArray))
                 .build();
+
+        postTestRequest(postUrl, postBodyImage);
+    }
+
+    private void postTestRequest(String postUrl, RequestBody postBodyImage) {
+        // create a new request
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder().url(postUrl).post(postBodyImage).build();
+
+        // send data in request and get the response
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull final Response response) throws IOException {
+                if (response.isSuccessful()) {
+
+                    assert response.body() != null;
+                    final String myResponse = response.body().string();
+
+                    RecognizeActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(RecognizeActivity.this, myResponse, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }
+        });
     }
 }
