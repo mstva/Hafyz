@@ -116,7 +116,8 @@ public class RecognizeActivity extends AppCompatActivity {
 
         // set the local ip -- ubuntu local host ip address
         // TODO -- Change it in the future to real server
-        String postUrl= "http://172.25.157.143:5000/test";
+        String postUrl= "http://172.29.12.39:5000/test";
+
 
         // convert image to byte array
         // TODO -- Refactor this to a separate function
