@@ -36,6 +36,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import tech.mstava.hafyzapp.utils.GraphicOverlay;
+import tech.mstava.hafyzapp.utils.Image;
 
 public class RecognizeActivity extends AppCompatActivity {
 
@@ -50,6 +51,9 @@ public class RecognizeActivity extends AppCompatActivity {
 
     // to store image picked from the gallery
     private Uri mImageUri;
+
+    // create an object from image class
+    private Image image;
 
     // to store json response
     private String person_name;
@@ -207,5 +211,19 @@ public class RecognizeActivity extends AppCompatActivity {
         params.height = imageHeight;
         params.width = imageWidth;
         mRecognizeImageView.setLayoutParams(params);
+    }
+
+    private Image getImageSize(Uri uri) throws FileNotFoundException {
+
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeStream(this.getContentResolver().openInputStream(uri), null, options);
+
+        int imageHeight = options.outHeight;
+        int imageWidth = options.outWidth;
+
+        image = new Image(imageWidth, imageHeight);
+
+        return image;
     }
 }
