@@ -11,6 +11,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -190,5 +191,21 @@ public class RecognizeActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void setLayout(int imageWidth, int imageHeight) {
+        // get layout of graphic overlay from xml
+        ViewGroup.LayoutParams params1 = graphicOverlay.getLayoutParams();
+        // set width and height of the layout based on image sizes
+        params1.height = imageHeight;
+        params1.width = imageWidth;
+        graphicOverlay.setLayoutParams(params1);
+
+        // get image uploaded from xml
+        ViewGroup.LayoutParams params = mRecognizeImageView.getLayoutParams();
+        // set image sizes to the same with graphic overlay sizes
+        params.height = imageHeight;
+        params.width = imageWidth;
+        mRecognizeImageView.setLayoutParams(params);
     }
 }
