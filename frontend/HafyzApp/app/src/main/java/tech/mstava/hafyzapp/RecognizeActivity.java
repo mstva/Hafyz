@@ -19,6 +19,9 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -46,6 +49,13 @@ public class RecognizeActivity extends AppCompatActivity {
 
     // to store image picked from the gallery
     private Uri mImageUri;
+
+    // to store json response
+    private String person_name;
+    private int top;
+    private int bottom;
+    private int left;
+    private int right;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -163,6 +173,18 @@ public class RecognizeActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             Toast.makeText(RecognizeActivity.this, myResponse, Toast.LENGTH_SHORT).show();
+
+                            try {
+                                JSONObject js = new JSONObject(myResponse);
+                                person_name = js.getString("name");
+                                top = js.getInt("top");
+                                bottom = js.getInt("bottom");
+                                left = js.getInt("left");
+                                right = js.getInt("right");
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
                         }
                     });
                 }
