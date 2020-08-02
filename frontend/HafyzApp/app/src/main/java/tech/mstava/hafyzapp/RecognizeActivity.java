@@ -37,6 +37,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import tech.mstava.hafyzapp.utils.GraphicOverlay;
 import tech.mstava.hafyzapp.utils.Image;
+import tech.mstava.hafyzapp.utils.RectOverlay;
 
 public class RecognizeActivity extends AppCompatActivity {
 
@@ -85,6 +86,7 @@ public class RecognizeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 openGallery();
+                graphicOverlay.clear();
             }
         });
 
@@ -115,6 +117,14 @@ public class RecognizeActivity extends AppCompatActivity {
             mImageUri = data.getData();
             Picasso.with(this).load(mImageUri).into(mRecognizeImageView);
         }
+
+        try {
+            image = getImageSize(mImageUri);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        setLayout(image.getWidth(), image.getHeight());
     }
 
     private String getFileExtension(Uri uri) {
@@ -131,7 +141,7 @@ public class RecognizeActivity extends AppCompatActivity {
 
         // set the local ip -- ubuntu local host ip address
         // TODO -- Change it in the future to real server
-        String postUrl= "http://172.25.157.143:5000/test";
+        String postUrl= "http://172.29.12.39:5000/test";
 
         // convert image to byte array
         // TODO -- Refactor this to a separate function
@@ -190,6 +200,10 @@ public class RecognizeActivity extends AppCompatActivity {
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
+
+                            // to take face locations and draw box around it
+                            RectOverlay rectOverlay = new RectOverlay(graphicOverlay, person_name, top, bottom, right, left);
+                            graphicOverlay.add(rectOverlay);
                         }
                     });
                 }
