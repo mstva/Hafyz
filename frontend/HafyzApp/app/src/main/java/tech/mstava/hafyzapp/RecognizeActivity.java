@@ -19,9 +19,6 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -49,13 +46,6 @@ public class RecognizeActivity extends AppCompatActivity {
 
     // to store image picked from the gallery
     private Uri mImageUri;
-
-    // to store the json response
-    private String person_name;
-    private int top;
-    private int bottom;
-    private int left;
-    private int right;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,6 +117,7 @@ public class RecognizeActivity extends AppCompatActivity {
         // set the local ip -- ubuntu local host ip address
         // TODO -- Change it in the future to real server
         String postUrl= "http://172.29.12.39:5000/test";
+
 
         // convert image to byte array
         // TODO -- Refactor this to a separate function
