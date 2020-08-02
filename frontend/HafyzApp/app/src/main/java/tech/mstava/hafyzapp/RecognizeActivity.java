@@ -1,3 +1,4 @@
+
 package tech.mstava.hafyzapp;
 
 import androidx.annotation.NonNull;
@@ -191,4 +192,3 @@ public class RecognizeActivity extends AppCompatActivity {
             }
         });
     }
-}
