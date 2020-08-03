@@ -11,6 +11,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -18,6 +19,9 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
@@ -32,6 +36,8 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import tech.mstava.hafyzapp.utils.GraphicOverlay;
+import tech.mstava.hafyzapp.utils.Image;
+import tech.mstava.hafyzapp.utils.RectOverlay;
 
 public class RecognizeActivity extends AppCompatActivity {
 
@@ -46,6 +52,16 @@ public class RecognizeActivity extends AppCompatActivity {
 
     // to store image picked from the gallery
     private Uri mImageUri;
+
+    // create an object from image class
+    private Image image;
+
+    // to store json response
+    private String person_name;
+    private int top;
+    private int bottom;
+    private int left;
+    private int right;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +86,7 @@ public class RecognizeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 openGallery();
+                graphicOverlay.clear();
             }
         });
 
@@ -100,6 +117,14 @@ public class RecognizeActivity extends AppCompatActivity {
             mImageUri = data.getData();
             Picasso.with(this).load(mImageUri).into(mRecognizeImageView);
         }
+
+        try {
+            image = getImageSize(mImageUri);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        setLayout(image.getWidth(), image.getHeight());
     }
 
     private String getFileExtension(Uri uri) {
@@ -117,7 +142,6 @@ public class RecognizeActivity extends AppCompatActivity {
         // set the local ip -- ubuntu local host ip address
         // TODO -- Change it in the future to real server
         String postUrl= "http://172.29.12.39:5000/test";
-
 
         // convert image to byte array
         // TODO -- Refactor this to a separate function
@@ -164,10 +188,56 @@ public class RecognizeActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             Toast.makeText(RecognizeActivity.this, myResponse, Toast.LENGTH_SHORT).show();
+
+                            try {
+                                JSONObject js = new JSONObject(myResponse);
+                                person_name = js.getString("name");
+                                top = js.getInt("top");
+                                bottom = js.getInt("bottom");
+                                left = js.getInt("left");
+                                right = js.getInt("right");
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                            // to take face locations and draw box around it
+                            RectOverlay rectOverlay = new RectOverlay(graphicOverlay, person_name, top, bottom, right, left);
+                            graphicOverlay.add(rectOverlay);
                         }
                     });
                 }
             }
         });
+    }
+
+    private void setLayout(int imageWidth, int imageHeight) {
+        // get layout of graphic overlay from xml
+        ViewGroup.LayoutParams params1 = graphicOverlay.getLayoutParams();
+        // set width and height of the layout based on image sizes
+        params1.height = imageHeight;
+        params1.width = imageWidth;
+        graphicOverlay.setLayoutParams(params1);
+
+        // get image uploaded from xml
+        ViewGroup.LayoutParams params = mRecognizeImageView.getLayoutParams();
+        // set image sizes to the same with graphic overlay sizes
+        params.height = imageHeight;
+        params.width = imageWidth;
+        mRecognizeImageView.setLayoutParams(params);
+    }
+
+    private Image getImageSize(Uri uri) throws FileNotFoundException {
+
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeStream(this.getContentResolver().openInputStream(uri), null, options);
+
+        int imageHeight = options.outHeight;
+        int imageWidth = options.outWidth;
+
+        image = new Image(imageWidth, imageHeight);
+
+        return image;
     }
 }
