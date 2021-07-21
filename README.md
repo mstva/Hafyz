@@ -11,7 +11,7 @@ You could see how I orgnized the stories and divided them into small tasks at:
 Also I made the requirements document for the project myself, take a look at:
 [Hafyz Reguirement Document](https://drive.google.com/file/d/16MFlJFNQly1Ob1CoZc6ziY0P7kQFo55T/view?usp=sharing)
 
-#### What I did?
+#### What do I did?
 - Analyzed the requirements document, in order to generate use cases and user stories.
 - Designed the user interface with consideration of Computer-Human Interaction guidelines.
 - Built a face recognition system with the face_recognition library which has a 99.38% accuracy.
@@ -29,7 +29,7 @@ Also I made the requirements document for the project myself, take a look at:
 - [face_recognition](https://github.com/ageitgey/face_recognition)
 - Read [requirements.txt](https://github.com/mstva/Hafyz/blob/master/backend/HafyzServer/requirements.txt)
 
-#### installation and Running:
+#### Installation and Running:
 - Clone the repo: `git clone git@github.com:mstva/Hafyz.git`
 - Install Requirement
 - Open HayzApp in Android Studio
