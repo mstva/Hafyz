@@ -9,7 +9,7 @@ You could see how I orgnized the stories and divided them into small tasks at:
 [Hafyz project on GitHub projects](https://github.com/mstva/Hafyz/projects/1)
 
 Also I made the requirements document for the project myself, take a look at:
-[Hafyz Reguirement Document](https://drive.google.com/file/d/16MFlJFNQly1Ob1CoZc6ziY0P7kQFo55T/view?usp=sharing)
+[Hafyz Requirements Document](https://drive.google.com/file/d/16MFlJFNQly1Ob1CoZc6ziY0P7kQFo55T/view?usp=sharing)
 
 #### What do I did?
 - Analyzed the requirements document, in order to generate use cases and user stories.
